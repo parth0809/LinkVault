@@ -4,6 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import AuthPage from "./AuthPage";
 import Share from "./share";
+import ShareView from './sharepage'
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -19,6 +20,7 @@ function App() {
             <Routes>
               <Route path="/" element={<AuthPage />} />
               <Route path="/share" element={<Share />} />
+              <Route path="/share/:token" element={<ShareView />} />
             </Routes>
           </main>
 

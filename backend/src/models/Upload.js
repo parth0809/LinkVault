@@ -20,6 +20,16 @@ const uploadSchema = new mongoose.Schema(
       size: Number,
       path: String,
     },
+     shareToken: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+     expiresAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
