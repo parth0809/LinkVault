@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 export default function Share() {
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
+  const [expiry, setExpiry] = useState("");
   const [message, setMessage] = useState("");
   const [shareLink, setShareLink] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
 
   useEffect(() => {
     const hasToken = document.cookie.includes("token=");
@@ -13,10 +15,23 @@ export default function Share() {
     }
   }, []);
 
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; 
+
+const allowedTypes = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "video/mp4",
+  "application/zip",
+  "text/plain"
+];
+
+
   const handleUpload = async (e) => {
     e.preventDefault();
     setMessage("");
     setShareLink("");
+    setExpiresAt("");
 
     if (!text && !file) {
       setMessage("Please provide text or select a file");
@@ -32,6 +47,12 @@ export default function Share() {
     if (text) formData.append("text", text);
     if (file) formData.append("file", file);
 
+    if (expiry) {
+      const localDate = new Date(expiry);
+      formData.append("expiry", localDate.toISOString());
+    }
+
+
     try {
       const res = await fetch("http://localhost:5000/upload", {
         method: "POST",
@@ -45,9 +66,11 @@ export default function Share() {
       }
 
       setMessage("Upload successful !!");
-      setShareLink(data.link); 
+      setShareLink(data.link);
+      setExpiresAt(data.expiresAt);
       setText("");
       setFile(null);
+      setExpiry("");
       e.target.reset();
     } catch (err) {
       setMessage(err.message);
@@ -56,10 +79,11 @@ export default function Share() {
 
   return (
     <div className="min-h-screen flex flex-col">
-
       <main className="flex-grow flex items-center justify-center text-slate-900 dark:text-white">
-       <div className="w-full max-w-6xl p-12 rounded-3xl shadow-lg bg-white dark:bg-slate-800">
-          <h2 className="text-5xl font-semibold mb-9 text-center">Share</h2>
+        <div className="w-full max-w-6xl p-12 rounded-3xl shadow-lg bg-white dark:bg-slate-800">
+          <h2 className="text-5xl font-semibold mb-9 text-center">
+            Share
+          </h2>
 
           <form onSubmit={handleUpload} className="space-y-4">
             <textarea
@@ -74,12 +98,49 @@ export default function Share() {
 
             <input
               type="file"
-              onChange={(e) => setFile(e.target.files[0])}
+              onChange={(e) => {
+                const selectedFile = e.target.files[0];
+
+                if (!selectedFile) return;
+
+                if (selectedFile.size > MAX_FILE_SIZE) {
+                  setMessage("File size exceeds 50MB limit.");
+                  e.target.value = "";
+                  return;
+                }
+
+                if (!allowedTypes.includes(selectedFile.type)) {
+                  setMessage("Unsupported file type.");
+                  e.target.value = "";
+                  return;
+                }
+
+                setFile(selectedFile);
+                setMessage("");
+              }}
               className="w-full text-sm"
             />
 
+
+            <div>
+              <label className="text-sm text-slate-600 dark:text-slate-300">
+                Optional Expiry (leave empty = 10 minutes default)
+              </label>
+              <input
+                type="datetime-local"
+                value={expiry}
+                onChange={(e) => setExpiry(e.target.value)}
+                className="w-full mt-1 p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700"
+              />
+            </div>
+
             {message && (
-              <p className={`text-sm ${message.includes("successful") ? "text-green-600" : "text-red-600"}`}>
+              <p
+                className={`text-sm ${message.includes("successful")
+                  ? "text-green-600"
+                  : "text-red-600"
+                  }`}
+              >
                 {message}
               </p>
             )}
@@ -91,26 +152,31 @@ export default function Share() {
               Upload
             </button>
           </form>
+
           {shareLink && (
-          <div className="mt-6 p-4 rounded-xl bg-slate-100 dark:bg-slate-700">
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">
-              Shareable link
-            </p>
+            <div className="mt-6 p-4 rounded-xl bg-slate-100 dark:bg-slate-700">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+                Shareable link
+              </p>
 
-            <a
-              href={`${window.location.origin}${shareLink}`}
-              className="break-all text-blue-600 dark:text-blue-400 underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {`${window.location.origin}${shareLink}`}
-            </a>
-          </div>
-        )}
+              <a
+                href={`${window.location.origin}${shareLink}`}
+                className="break-all text-blue-600 dark:text-blue-400 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {`${window.location.origin}${shareLink}`}
+              </a>
 
+              {expiresAt && (
+                <p className="text-xs mt-2 text-slate-500 dark:text-slate-400">
+                  Expires at: {new Date(expiresAt).toLocaleString()}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </main>
-
     </div>
   );
 }

@@ -8,6 +8,16 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
+const allowedMimeTypes = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "video/mp4",
+  "application/zip",
+  "text/plain"
+];
+
 const storage = multer.diskStorage({
   destination: (_, __, cb) => cb(null, uploadDir),
 
@@ -21,7 +31,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, 
+
+  limits: { fileSize: 50 * 1024 * 1024 },
+
+  fileFilter: (req, file, cb) => {
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      return cb(new Error("Unsupported file type"), false);
+    }
+    cb(null, true);
+  },
 });
 
 export default upload;

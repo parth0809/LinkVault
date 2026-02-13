@@ -1,0 +1,1 @@
+INFOSEC_2026_CTF{fake_flag}

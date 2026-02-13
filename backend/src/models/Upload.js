@@ -26,12 +26,16 @@ const uploadSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
-     expiresAt: {
+      expiresAt: {
       type: Date,
-      default: null,
+      default: function () {
+        return new Date(Date.now() + 10 * 60 * 1000);
+      },
     },
   },
   { timestamps: true }
 );
+
+uploadSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model("Upload", uploadSchema);
