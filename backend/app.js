@@ -30,6 +30,8 @@ app.use(cookieParser());
 app.use("/", authRoutes);
 app.use("/",uploadRoutes);
 app.use("/", shareRoutes);
+app.use("/upload", uploadRoutes);
+
 
 
 export default app;

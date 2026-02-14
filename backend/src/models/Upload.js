@@ -20,22 +20,44 @@ const uploadSchema = new mongoose.Schema(
       size: Number,
       path: String,
     },
-     shareToken: {
+    shareToken: {
       type: String,
       required: true,
       unique: true,
       index: true,
     },
-      expiresAt: {
+    expiresAt: {
       type: Date,
       default: function () {
         return new Date(Date.now() + 10 * 60 * 1000);
       },
     },
+    maxViews: {
+      type: Number,
+      default: 100,
+    },
+    currentViews: {
+      type: Number,
+      default: 0,
+    },
+    maxDownloads: {
+      type: Number,
+      default: 100,
+    },
+    currentDownloads: {
+      type: Number,
+      default: 0,
+    },
+    sharePassword: {
+      type: String,
+      default: null
+    },
+    isPasswordProtected: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );
-
-uploadSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model("Upload", uploadSchema);

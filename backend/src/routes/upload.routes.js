@@ -1,7 +1,7 @@
 import express from "express";
 import authMiddleware from "../middleware/auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";
-import { uploadData , getFileByName} from "../controllers/upload.controller.js";
+import { uploadData ,deleteUpload ,getMyUploads } from "../controllers/upload.controller.js";
 import multer from "multer";
 
 const router = express.Router();
@@ -27,7 +27,9 @@ router.post(
   },
   uploadData
 );
-router.get("/uploads/:filename", getFileByName);
+router.get("/my-uploads", authMiddleware, getMyUploads);
+router.delete("/upload/:id", authMiddleware, deleteUpload);
+
 
 
 

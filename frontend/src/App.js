@@ -16,9 +16,16 @@ function App() {
           
           <Header darkMode={darkMode} setDarkMode={setDarkMode} />
 
-          <main className="flex-grow flex items-center justify-center">
+          <main className="flex-grow ">
             <Routes>
-              <Route path="/" element={<AuthPage />} />
+               <Route
+      path="/"
+      element={
+        <div className="flex items-center justify-center min-h-[calc(100vh-140px)]">
+          <AuthPage />
+        </div>
+      }z
+    />
               <Route path="/share" element={<Share />} />
               <Route path="/share/:token" element={<ShareView />} />
             </Routes>
