@@ -2,7 +2,7 @@
 
 A full-stack app to securely share either plain text or files using expiring links.
 
-Design Decisions
+## Design Decisions
 - Tokenized share links: Each upload gets a random shareToken (generated with crypto) so links are hard to guess and can be shared directly.
 - Single-share content model: One upload stores either text or one file (not both), which simplifies retrieval logic and avoids ambiguous share behavior.
 - MongoDB + Mongoose: Chosen for fast iteration with flexible schema fields like expiresAt, maxViews, maxDownloads, and optional password flags.
