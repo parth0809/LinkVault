@@ -36,23 +36,36 @@ A full-stack app to securely share either plain text or files using expiring lin
 ├── backend
 │   ├── app.js
 │   ├── index.js
+│   ├── .env
+│   ├── Uploads
+│   │   └── files
 │   └── src
-│       ├── config (db.js)
-│       ├── controllers (auth.controllers.js , shareControllers.js , upload.controllers.js)
-│       ├── jobs (cron.jobs.js)
-│       ├── middleware (auth.middleware.js , upload.middleware.js)
-│       ├── models (Upload.js, user.js)
-│       └── routes (auth.routes.js , share.routes.js ,upload.routes.js)
-|   └── Uploads
-         ──files
-    ├──.env
+│       ├── config
+│       │   └── db.js
+│       ├── controllers
+│       │   ├── auth.controllers.js
+│       │   ├── shareControllers.js
+│       │   └── upload.controllers.js
+│       ├── jobs
+│       │   └── cron.jobs.js
+│       ├── middleware
+│       │   ├── auth.middleware.js
+│       │   └── upload.middleware.js
+│       ├── models
+│       │   ├── Upload.js
+│       │   └── user.js
+│       └── routes
+│           ├── auth.routes.js
+│           ├── share.routes.js
+│           └── upload.routes.js
+│
 └── frontend
     └── src
-        ├── App.js // once authenticated share form 
-        ├── AuthPage.js // login/signup form
-        ├── share.js // upload data in form 
-        ├── sharepage.js // open links 
-    
+        ├── App.js          // once authenticated share form
+        ├── AuthPage.js     // login/signup form
+        ├── share.js        // upload data form
+        └── sharepage.js    // open shared links
+
 ## Prerequisites
 
 - Node.js
