@@ -1,38 +1,38 @@
-# LinkVault 
+LinkVault 
 
 A full-stack app to securely share either plain text or files using expiring links.
 
-## Design Decisions
-- Tokenized share links: Each upload gets a random shareToken (generated with crypto) so links are hard to guess and can be shared directly.
-- Single-share content model: One upload stores either text or one file (not both), which simplifies retrieval logic and avoids ambiguous share behavior.
-- MongoDB + Mongoose: Chosen for fast iteration with flexible schema fields like expiresAt, maxViews, maxDownloads, and optional password flags.
-- Expiry by data + cleanup job: Expiry is enforced at access time and also cleaned in background with a cron job, so expired items are both inaccessible and eventually removed from storage.
-- Cookie-based JWT auth for owner actions: Auth is used for creating/listing/deleting a user’s own uploads, while shared links remain accessible by token (and optional password) for recipients.
-- Separate endpoints for view/unlock/download: Kept explicit routes for read, unlock, and file download to keep API behavior predictable and easier to validate.
-- Validation on both layers: Frontend validates basic inputs for user feedback, while backend performs authoritative validation for security and correctness.
-- Disk-based file storage (local): Multer stores files in local uploads/ for simplicity in development; metadata is saved in DB for retrieval and cleanup.
+Design Decisions
+Tokenized share links: Each upload gets a random shareToken (generated with crypto) so links are hard to guess and can be shared directly.
+Single-share content model: One upload stores either text or one file (not both), which simplifies retrieval logic and avoids ambiguous share behavior.
+MongoDB + Mongoose: Chosen for fast iteration with flexible schema fields like expiresAt, maxViews, maxDownloads, and optional password flags.
+Expiry by data + cleanup job: Expiry is enforced at access time and also cleaned in background with a cron job, so expired items are both inaccessible and eventually removed from storage.
+Cookie-based JWT auth for owner actions: Auth is used for creating/listing/deleting a user’s own uploads, while shared links remain accessible by token (and optional password) for recipients.
+Separate endpoints for view/unlock/download: Kept explicit routes for read, unlock, and file download to keep API behavior predictable and easier to validate.
+Validation on both layers: Frontend validates basic inputs for user feedback, while backend performs authoritative validation for security and correctness.
+Disk-based file storage (local): Multer stores files in local uploads/ for simplicity in development; metadata is saved in DB for retrieval and cleanup.
 
-## Features
+Features
 
-- User signup and login with JWT-based auth
-- Upload either text or a file (mutually exclusive)
-- Shareable tokenized links
-- Optional link password protection
-- Expiry support for links
-- Max views limit for text links
-- Max downloads limit for file links
-- Auto cleanup of expired uploads via cron job
-- Dashboard to view and delete your own uploads
+User signup and login with JWT-based auth
+Upload either text or a file (mutually exclusive)
+Shareable tokenized links
+Optional link password protection
+Expiry support for links
+Max views limit for text links
+Max downloads limit for file links
+Auto cleanup of expired uploads via cron job
+Dashboard to view and delete your own uploads
 
-## Tech Stack
+Tech Stack
 
-- Frontend: React , React Router, Tailwind CSS
-- Backend: Node.js, Express, MongoDB, Mongoose
-- Auth/Security: JWT, bcrypt, cookie-based token transport
-- File handling: Multer
+Frontend: React , React Router, Tailwind CSS
+Backend: Node.js, Express, MongoDB, Mongoose
+Auth/Security: JWT, bcrypt, cookie-based token transport
+File handling: Multer
 
-## Project Structure
-.
+Project Structure
+
 ├── backend
 │   ├── app.js
 │   ├── index.js
@@ -66,13 +66,13 @@ A full-stack app to securely share either plain text or files using expiring lin
         ├── share.js        // upload data form
         └── sharepage.js    // open shared links
 
-## Prerequisites
+Prerequisites
 
-- Node.js
-- npm
-- MongoDB instance .
+Node.js
+npm
+MongoDB instance .
 
-## Backend Setup
+Backend Setup
 
 1. Go to backend:
    cd backend
@@ -87,7 +87,7 @@ A full-stack app to securely share either plain text or files using expiring lin
 
 Backend runs on http://localhost:5000 by default.
 
-## Frontend Setup
+Frontend Setup
 
 1. Go to frontend:
    cd frontend
@@ -100,42 +100,42 @@ Backend runs on http://localhost:5000 by default.
 
 Frontend runs on http://localhost:3000 by default.
 
-## Auth Behavior
+Auth Behavior
 
-- POST /login and POST /signup return a JWT token.
-- Frontend stores token in browser cookie (token) and sends it to protected endpoints.
-- Protected routes on backend read token from cookies.
+POST /login and POST /signup return a JWT token.
+Frontend stores token in browser cookie (token) and sends it to protected endpoints.
+Protected routes on backend read token from cookies.
 
-## Main API Endpoints
+Main API Endpoints
 
-- POST /signup - create account
-- POST /login - authenticate user
-- POST /upload - create text/file share (auth required)
-- GET /my-uploads - list current user's uploads (auth required)
-- DELETE /upload/:id - delete one upload (auth required)
-- GET /share/:token - view shared text/file metadata
-- POST /share/:token/unlock - unlock password-protected shared content
-- GET /share/:token/download - download shared file
-- POST /share/:token/download/unlock - unlock and download protected file
+POST /signup - create account
+POST /login - authenticate user
+POST /upload - create text/file share (auth required)
+GET /my-uploads - list current user's uploads (auth required)
+DELETE /upload/:id - delete one upload (auth required)
+GET /share/:token - view shared text/file metadata
+POST /share/:token/unlock - unlock password-protected shared content
+GET /share/:token/download - download shared file
+POST /share/:token/download/unlock - unlock and download protected file
 
-## Upload Rules
+Upload Rules
 
-- You must provide either:
-  - text, or
-  - file
-- Sending both text and file in one request is rejected.
-- Max file size: 50 MB
-- Allowed file MIME types:
-  - application/pdf
-  - image/png
-  - image/jpeg
-  - image/jpg
-  - video/mp4
-  - application/zip
-  - text/plain
+You must provide either:
+text, or
+file
+Sending both text and file in one request is rejected.
+Max file size: 50 MB
+Allowed file MIME types:
+    application/pdf
+    image/png
+    image/jpeg
+    image/jpg
+    video/mp4
+    application/zip
+    text/plain
 
-## Cleanup Job
+Cleanup Job
 
-- A cron job runs every minute.
-- Expired uploads are removed from MongoDB.
-- If the upload contains a file, the file is also deleted from disk.
+A cron job runs every minute.
+Expired uploads are removed from MongoDB.
+If the upload contains a file, the file is also deleted from disk.
